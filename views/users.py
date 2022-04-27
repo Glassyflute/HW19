@@ -70,3 +70,4 @@ class UserView(Resource):
 
         db.session.commit()
         return "", 204
+

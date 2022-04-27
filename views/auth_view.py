@@ -60,6 +60,3 @@ class AuthView(Resource):
 
         return generate_tokens(data), 201
 
-
-
-
