@@ -1,5 +1,5 @@
 import hashlib
-import base64
+
 from datetime import datetime, timedelta
 import jwt
 import calendar
@@ -11,11 +11,17 @@ JWT_ALGORITHM = 'HS256'
 
 
 def get_hash(password):
+    """
+    конвертирует полученный пароль в хэш пароля
+    """
     password_hash = hashlib.md5(password.encode('utf-8')).hexdigest()
     return password_hash
 
 
 def generate_tokens(data):
+    """
+    генерирует access_token, refresh_token в виде словаря
+    """
     min30 = datetime.utcnow() + timedelta(minutes=30)
     data["exp"] = calendar.timegm(min30.timetuple())
     data["refresh_token"] = False
@@ -31,6 +37,9 @@ def generate_tokens(data):
 
 
 def decode_token(token):
+    """
+    общая функция декодирования токена по секретному ключу и алгоритму
+    """
     try:
         decoded_token = jwt.decode(jwt=token, key=SECRET_HERE, algorithms=[JWT_ALGORITHM])
         return decoded_token
@@ -40,6 +49,9 @@ def decode_token(token):
 
 
 def auth_required(func):
+    """
+    запрашивает авторизацию пользователя
+    """
     def wrapper(*args, **kwargs):
         if "Authorization" not in request.headers:
             abort(401)
@@ -57,6 +69,9 @@ def auth_required(func):
 
 
 def admin_required(func):
+    """
+    проверяет роль пользователя на соотв. администратору
+    """
     def wrapper(*args, **kwargs):
         if "Authorization" not in request.headers:
             abort(401)

@@ -1,10 +1,3 @@
-import hashlib
-import jwt
-import calendar
-import datetime
-SECRET_HERE = '249y823r9v8238r9u'
-JWT_ALGORITHM = 'HS256'
-
 from flask_restx import Resource, Namespace
 from flask import request, abort
 from models import User, UserSchema
@@ -59,7 +52,7 @@ class UsersView(Resource):
         req_json["password"] = get_hash(password)
         password_hash = req_json["password"]
 
-        # проверяем, что хэши пароля пользователя из базы и при логине совпадают.
+        # проверяем, что хэши пароля пользователя из базы и при авторизации совпадают.
         if password_hash != user.password:
             return {"error": "Неверные учётные данные"}, 401
 
@@ -134,23 +127,3 @@ class UserView(Resource):
         }
 
         return generate_tokens(data), 201
-
-# как проверяем что токен не истек и валиден?
-
-
-
-
-
-
-
-
-        # min30 = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
-        # data["exp"] = calendar.timegm(min30.timetuple())
-        # access_token = jwt.encode(data, secret, algorithm=algo)
-        # days130 = datetime.datetime.utcnow() + datetime.timedelta(days=130)
-        # data["exp"] = calendar.timegm(days130.timetuple())
-        # refresh_token = jwt.encode(data, secret, algorithm=algo)
-        # tokens = {"access_token": access_token, "refresh_token": refresh_token}
-        #
-        # return tokens, 201
-
