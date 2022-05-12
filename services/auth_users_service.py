@@ -13,6 +13,11 @@ class AuthUsersService:
         item_serialized = UserSchema().dump(item_db)
         return item_serialized
 
+    def get_one_by_username(self, item_data):
+        item_db = self.dao.get_one_by_username(item_data)
+        item_serialized = UserSchema().dump(item_db)
+        return item_serialized
+
     def get_all(self):
         items_db = self.dao.get_all()
         items_serialized = UserSchema(many=True).dump(items_db)

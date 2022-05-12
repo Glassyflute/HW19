@@ -9,6 +9,11 @@ class AuthUserDAO:
         item = self.session.query(User).filter(User.id == item_id).one_or_none()
         return item
 
+    def get_one_by_username(self, item_data):
+        username = item_data.get("username")
+        item = self.session.query(User).filter(User.username == username).one_or_none()
+        return item
+
     def get_all(self):
         items = self.session.query(User).all()
         return items
