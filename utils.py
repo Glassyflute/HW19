@@ -59,9 +59,9 @@ def auth_required(func):
         data = request.headers["Authorization"]
         token = data.split("Bearer ")[-1]
 
-        decoded_token_ = decode_token(token)
+        decoded_token_item = decode_token(token)
 
-        if decoded_token_["refresh_token"]:
+        if decoded_token_item["refresh_token"]:
             abort(400)
 
         return func(*args, **kwargs)
@@ -79,9 +79,9 @@ def admin_required(func):
         data = request.headers["Authorization"]
         token = data.split("Bearer ")[-1]
 
-        decoded_token_ = decode_token(token)
+        decoded_token_item = decode_token(token)
 
-        if decoded_token_["role"] != "admin":
+        if decoded_token_item["role"] != "admin":
             abort(403)
 
         return func(*args, **kwargs)

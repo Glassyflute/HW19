@@ -9,8 +9,8 @@ from views.directors import director_ns
 from views.genres import genre_ns
 from views.movies import movie_ns
 from views.users import user_ns
-from views.auth_view import auth_ns
-from models import User
+# from views.auth_view import auth_ns
+from dao.model.user import User
 
 
 def create_app(config_object):
@@ -27,12 +27,13 @@ def register_extensions(app):
     api.add_namespace(genre_ns)
     api.add_namespace(movie_ns)
     api.add_namespace(user_ns)
-    api.add_namespace(auth_ns)
+    # api.add_namespace(auth_ns)
     create_data(app, db)
 
 
 def create_data(app, db):
     with app.app_context():
+        # db.drop_all(tables="user", checkfirst=True)
         db.create_all()
 
         u1 = User(username="vasya", password=get_hash("my_little_pony"), role="user")

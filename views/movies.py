@@ -1,68 +1,39 @@
 from flask import request
 from flask_restx import Resource, Namespace
-
-from models import Movie, MovieSchema
-from setup_db import db
-from utils import auth_required, admin_required
+from container import movie_service
+# from utils import auth_required, admin_required
 
 movie_ns = Namespace('movies')
 
 
 @movie_ns.route('/')
 class MoviesView(Resource):
-    @auth_required
+    # @auth_required
     def get(self):
-        director = request.args.get("director_id")
-        genre = request.args.get("genre_id")
-        year = request.args.get("year")
-        t = db.session.query(Movie)
-        if director is not None:
-            t = t.filter(Movie.director_id == director)
-        if genre is not None:
-            t = t.filter(Movie.genre_id == genre)
-        if year is not None:
-            t = t.filter(Movie.year == year)
-        all_movies = t.all()
-        res = MovieSchema(many=True).dump(all_movies)
-        return res, 200
+        return movie_service.get_all(), 200
 
-    @admin_required
+    # @admin_required
     def post(self):
-        req_json = request.json
-        ent = Movie(**req_json)
-
-        db.session.add(ent)
-        db.session.commit()
-        return "", 201, {"location": f"/movies/{ent.id}"}
+        new_data = request.json
+        movie_service.create(new_data)
+        return "", 201
 
 
-@movie_ns.route('/<int:bid>')
+@movie_ns.route('/<int:item_id>')
 class MovieView(Resource):
-    @auth_required
-    def get(self, bid):
-        b = db.session.query(Movie).get(bid)
-        sm_d = MovieSchema().dump(b)
-        return sm_d, 200
+    # @auth_required
+    def get(self, item_id):
+        return movie_service.get_one(item_id), 200
 
-    @admin_required
-    def put(self, bid):
-        movie = db.session.query(Movie).get(bid)
-        req_json = request.json
-        movie.title = req_json.get("title")
-        movie.description = req_json.get("description")
-        movie.trailer = req_json.get("trailer")
-        movie.year = req_json.get("year")
-        movie.rating = req_json.get("rating")
-        movie.genre_id = req_json.get("genre_id")
-        movie.director_id = req_json.get("director_id")
-        db.session.add(movie)
-        db.session.commit()
+    # @admin_required
+    def put(self, item_id):
+        new_data = request.json
+        new_data["id"] = item_id
+        movie_service.update(new_data)
         return "", 204
 
-    @admin_required
-    def delete(self, bid):
-        movie = db.session.query(Movie).get(bid)
-
-        db.session.delete(movie)
-        db.session.commit()
+    # @admin_required
+    def delete(self, item_id):
+        movie_service.delete(item_id)
         return "", 204
+    

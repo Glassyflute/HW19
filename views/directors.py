@@ -1,67 +1,41 @@
 from flask_restx import Resource, Namespace
 from flask import request
-from models import Director, DirectorSchema
-from setup_db import db
-from utils import auth_required, admin_required
+
+# from utils import auth_required, admin_required
+
+from container import director_service
 
 director_ns = Namespace('directors')
 
 
 @director_ns.route('/')
 class DirectorsView(Resource):
-    @auth_required
+    # @auth_required
     def get(self):
-        rs = db.session.query(Director).all()
-        res = DirectorSchema(many=True).dump(rs)
-        return res, 200
+        return director_service.get_all(), 200
 
-    @admin_required
+    # @admin_required
     def post(self):
         new_data = request.json
-
-        director_ = DirectorSchema().load(new_data)
-        new_director = Director(**director_)
-        with db.session.begin():
-            db.session.add(new_director)
-
+        director_service.create(new_data)
         return "", 201
     # ставим при проверке закрывающий слэш в Postman
 
 
-@director_ns.route('/<int:did>')
+@director_ns.route('/<int:item_id>')
 class DirectorView(Resource):
-    @auth_required
-    def get(self, did):
-        r = db.session.query(Director).get(did)
-        sm_d = DirectorSchema().dump(r)
-        return sm_d, 200
+    # @auth_required
+    def get(self, item_id):
+        return director_service.get_one(item_id), 200
 
-    @admin_required
-    def put(self, did):
-        director_selected = db.session.query(Director).filter(Director.id == did)
-        director_first = director_selected.first()
-
-        if director_first is None:
-            return "", 404
-
+    # @admin_required
+    def put(self, item_id):
         new_data = request.json
-        director_selected.update(new_data)
-        db.session.commit()
-
+        new_data["id"] = item_id
+        director_service.update(new_data)
         return "", 204
 
-    @admin_required
-    def delete(self, did):
-        director_selected = db.session.query(Director).filter(Director.id == did)
-        director_first = director_selected.first()
-
-        if director_first is None:
-            return "", 404
-
-        rows_deleted = director_selected.delete()
-        # если произошло удаление более 1 строки, то указываем на наличие проблемы.
-        if rows_deleted != 1:
-            return "", 400
-
-        db.session.commit()
+    # @admin_required
+    def delete(self, item_id):
+        director_service.delete(item_id)
         return "", 204
