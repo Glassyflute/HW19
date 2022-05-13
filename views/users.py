@@ -1,7 +1,6 @@
 from flask_restx import Resource, Namespace
 from flask import request, abort
 from container import user_service
-from utils import get_hash
 
 user_ns = Namespace('users')
 

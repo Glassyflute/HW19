@@ -10,6 +10,11 @@ class UserDAO:
         item = self.session.query(User).filter(User.id == item_id).one_or_none()
         return item
 
+    def get_one_by_username(self, item_data):
+        username = item_data.get("username")
+        item = self.session.query(User).filter(User.username == username).one_or_none()
+        return item
+
     def get_all(self):
         items_temp = self.session.query(User)
 
@@ -35,8 +40,12 @@ class UserDAO:
         item = self.session.query(User).filter(User.id == item_id).update(new_data)
         self.session.commit()
 
+    def update_by_username(self, new_data):
+        username = new_data.get("username")
+        item = self.session.query(User).filter(User.username == username).update(new_data)
+        self.session.commit()
+
     def delete(self, item_id):
         item = self.get_one(item_id)
         self.session.delete(item)
         self.session.commit()
-        

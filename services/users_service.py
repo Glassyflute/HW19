@@ -13,6 +13,11 @@ class UsersService:
         item_serialized = UserSchema().dump(item_db)
         return item_serialized
 
+    def get_one_by_username(self, item_data):
+        item_db = self.dao.get_one_by_username(item_data)
+        item_serialized = UserSchema().dump(item_db)
+        return item_serialized
+
     def get_all(self):
         items_db = self.dao.get_all()
         items_serialized = UserSchema(many=True).dump(items_db)
@@ -26,6 +31,10 @@ class UsersService:
         self.dao.update(new_data)
         return self.dao
 
+    def update_by_username(self, new_data):
+        self.dao.update_by_username(new_data)
+        return self.dao
+
     def delete(self, item_id):
         self.dao.delete(item_id)
 
@@ -35,10 +44,13 @@ class UsersService:
             new_data["password"] = get_hash(new_data["password"])
             return new_data
 
+    def hash_old_new_passwords(self, new_data):
+        if "password_old" in new_data and "password_new" in new_data:
+            new_data["password_old"] = get_hash(new_data["password_old"])
+            new_data["password_new"] = get_hash(new_data["password_new"])
+            return new_data
 
 
-
-    #
     # username = new_data.get("username", None)
     # password = new_data.get("password", None)
     # if None in [username, password]:

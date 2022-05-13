@@ -88,3 +88,18 @@ def admin_required(func):
     return wrapper
 
 
+def userdata_temp(func):
+    def wrapper(*args, **kwargs):
+        # if "Authorization" not in request.headers:
+        #     abort(401)
+
+        data = request.headers["Authorization"]
+        token = data.split("Bearer ")[-1]
+
+        decoded_token_item = decode_token(token)
+        print(f"decoded_token_item - {decoded_token_item}")
+        username = decoded_token_item["username"]
+        return username
+
+    return wrapper
+
