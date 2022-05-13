@@ -10,12 +10,10 @@ class MovieDAO:
         item = self.session.query(Movie).filter(Movie.id == item_id).one_or_none()
         return item
 
-    def get_all(self, status_is_new=False, page=0):
+    def get_all(self):
         director_id = request.args.get("director_id")
         genre_id = request.args.get("genre_id")
         year_selected = request.args.get("year")
-        # status -- new -- would sort and show most recent items
-        # page = is optional param = limit 12 per page == offset xxx ==
 
         items_temp = self.session.query(Movie)
 
@@ -28,14 +26,21 @@ class MovieDAO:
         if year_selected:
             items_temp = items_temp.filter(Movie.year == year_selected)
 
-        if status_is_new:
+        status = request.args.get("status")
+        print(f"Status in request is indicated as {status}")
+        if status == "new":
             items_temp = items_temp.order_by(Movie.year.desc())
 
-        if page >= 1:
-            items_temp = items_temp.limit(12).offset(page)
-        # int(page)
-        items = items_temp.all()
-        return items
+        page = request.args.get("page")
+        print(f"Page in request is indicated as {page}")
+        if page is not None:
+            per_page_limit = 2  # replace with 12 when finished
+            page_int = int(page)
+            items_paginated = items_temp.limit(per_page_limit).offset(page_int)
+            return items_paginated
+        else:
+            items = items_temp.all()
+            return items
 
     def create(self, item_data):
         new_data = Movie(**item_data)
