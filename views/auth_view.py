@@ -2,7 +2,6 @@ from flask_restx import Resource, Namespace
 from flask import request, abort
 from container import auth_user_service
 
-from setup_db import db
 from utils import get_hash, generate_tokens, decode_token
 
 auth_ns = Namespace('auth')

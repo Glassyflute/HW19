@@ -1,7 +1,7 @@
 from flask import request
 from flask_restx import Resource, Namespace
 from container import movie_service
-# from utils import auth_required, admin_required
+from utils import auth_required, admin_required
 
 movie_ns = Namespace('movies')
 
@@ -36,4 +36,3 @@ class MovieView(Resource):
     def delete(self, item_id):
         movie_service.delete(item_id)
         return "", 204
-    

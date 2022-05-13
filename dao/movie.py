@@ -10,7 +10,7 @@ class MovieDAO:
         item = self.session.query(Movie).filter(Movie.id == item_id).one_or_none()
         return item
 
-    def get_all(self):
+    def get_all(self, status_is_new=False, page=0):
         director_id = request.args.get("director_id")
         genre_id = request.args.get("genre_id")
         year_selected = request.args.get("year")
@@ -28,6 +28,12 @@ class MovieDAO:
         if year_selected:
             items_temp = items_temp.filter(Movie.year == year_selected)
 
+        if status_is_new:
+            items_temp = items_temp.order_by(Movie.year.desc())
+
+        if page >= 1:
+            items_temp = items_temp.limit(12).offset(page)
+        # int(page)
         items = items_temp.all()
         return items
 
