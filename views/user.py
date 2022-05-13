@@ -1,7 +1,7 @@
 from flask_restx import Resource, Namespace
 from flask import request, abort
 from container import user_service
-from utils import userdata_temp
+from utils import userdata_temp, generate_tokens
 
 user_profile_ns = Namespace('user')
 
@@ -69,6 +69,19 @@ class UsersView(Resource):
         }
 
         user_service.update_by_username(data_to_update)
+        # return "", 204
 
-        return "", 204
+        # генерируем токены.
+        data = {
+            "username": user_db["username"],
+            "role": user_db["role"]
+        }
+
+        print(data)
+        return generate_tokens(data), 201
+
+
+# check that tokens are generated
+
+
 
