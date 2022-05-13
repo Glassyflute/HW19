@@ -1,5 +1,5 @@
 from dao.model.genre import Genre
-from flask import abort
+from flask import request
 
 
 class GenreDAO:
@@ -11,9 +11,18 @@ class GenreDAO:
         return item
 
     def get_all(self):
-        items = self.session.query(Genre).all()
-        # to modify with status and page
-        return items
+        items_temp = self.session.query(Genre)
+
+        page = request.args.get("page")
+        print(f"Page in request is indicated as {page}")
+        if page is not None:
+            per_page_limit = 12
+            page_int = int(page)
+            items_paginated = items_temp.limit(per_page_limit).offset(page_int)
+            return items_paginated
+        else:
+            items = items_temp.all()
+            return items
 
     def create(self, item_data):
         new_data = Genre(**item_data)

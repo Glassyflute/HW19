@@ -6,8 +6,8 @@ from utils import get_hash, generate_tokens, decode_token
 
 auth_ns = Namespace('auth')
 
-
-@auth_ns.route('/')
+# /login
+@auth_ns.route('/login')
 class AuthView(Resource):
     def post(self):
         new_data = request.json
@@ -64,6 +64,10 @@ class AuthView(Resource):
         if refresh_token is None:
             abort(400)
 
+        access_token = new_data.get("access_token")
+        if access_token is None:
+            abort(400)
+
         decoded_token = decode_token(refresh_token)
         print(f"Decoded token - {decoded_token}")
 
@@ -80,3 +84,15 @@ class AuthView(Resource):
         }
         print(data)
         return generate_tokens(data), 201
+
+
+@auth_ns.route('/register')
+class AuthView(Resource):
+    def post(self):
+        new_data = request.json
+
+        auth_user_service.hash_password(new_data)
+        auth_user_service.create(new_data)
+
+        return "", 201
+

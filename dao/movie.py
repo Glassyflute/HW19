@@ -34,7 +34,7 @@ class MovieDAO:
         page = request.args.get("page")
         print(f"Page in request is indicated as {page}")
         if page is not None:
-            per_page_limit = 2  # replace with 12 when finished
+            per_page_limit = 12
             page_int = int(page)
             items_paginated = items_temp.limit(per_page_limit).offset(page_int)
             return items_paginated
