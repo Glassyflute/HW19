@@ -2,7 +2,6 @@ from dao.movie import MovieDAO
 from dao.model.movie import MovieSchema
 
 
-# CRUD
 class MoviesService:
     def __init__(self, dao: MovieDAO):
         self.dao = dao

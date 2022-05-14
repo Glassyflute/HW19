@@ -3,7 +3,6 @@ from dao.model.user import UserSchema
 from utils import get_hash
 
 
-# CRUD
 class UsersService:
     def __init__(self, dao: UserDAO):
         self.dao = dao
@@ -55,6 +54,3 @@ class UsersService:
     # password = new_data.get("password", None)
     # if None in [username, password]:
     #     abort(400)
-    #
-    # # заменяем пароль в словаре по пользователю на хэш пароля.
-    # new_data["password"] = get_hash(password)

@@ -2,7 +2,6 @@ from dao.director import DirectorDAO
 from dao.model.director import DirectorSchema
 
 
-# CRUD
 class DirectorsService:
     def __init__(self, dao: DirectorDAO):
         self.dao = dao

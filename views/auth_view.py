@@ -1,12 +1,11 @@
 from flask_restx import Resource, Namespace
 from flask import request, abort
 from container import auth_user_service
-
 from utils import get_hash, generate_tokens, decode_token
 
 auth_ns = Namespace('auth')
 
-# /login
+
 @auth_ns.route('/login')
 class AuthView(Resource):
     def post(self):
@@ -45,17 +44,6 @@ class AuthView(Resource):
 
         print(data)
         return generate_tokens(data), 201
-
-
-# когда заходим на вьюшку POST auth, вводим username-password в Body, получаем 2 токена.
-# на jwt.io можно проверить, что внутри этих токенов.
-#
-# когда подставили наши декораторы на авторизацию, подставляем наш access_token в графу Authorization- bearer token.
-#     когда наш токен валидный, то статус код страницы 200, все ОК
-#
-# когда PUT auth, мы из данных request.json получаем refresh_token, а затем получаем новые 2 токена.
-    # когда заходим на вьюшку PUT auth, вносим refresh_token в Body, должны получить 2 новых токена.
-    #
 
     def put(self):
         new_data = request.json
